@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Secret Santa Draw</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 2em;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    #box {
+      width: 300px;
+      height: 50px;
+      overflow: hidden;
+      margin: 20px auto;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      position: relative;
+    }
+    #namesContainer {
+      position: absolute;
+      width: 100%;
+      animation: none;
+    }
+    .name {
+      height: 50px;
+      line-height: 50px;
+      font-size: 1em;
+      color: #333;
+      background-color: #e9f5ff;
+    }
+    @keyframes slideUpAnim {
+      from { transform: translateY(0); }
+      to { transform: translateY(-VAR_HEIGHTpx); }
+    }
+    select, button {
+      font-size: 1em;
+      padding: 0.5em;
+      margin-top: 1em;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎁 Secret Santa Draw 🎄</h2>
+    <select id="nameSelect">
+      <option value="">-- Select Your Name --</option>
+      <option value="Yasmine Benachenhou">Yasmine Benachenhou</option>
+      <option value="Sarah Seladji">Sarah Seladji</option>
+      <option value="Sirine Bassaid">Sirine Bassaid</option>
+      <option value="Ryma Benmansour">Ryma Benmansour</option>
+      <option value="So Fia">So Fia</option>
+      <option value="Rayan Zekri">Rayan Zekri</option>
+      <option value="Ines Bestaoui">Ines Bestaoui</option>
+      <option value="Elissa Belarbi">Elissa Belarbi</option>
+    </select><br>
+    <button onclick="startDraw()">Start Draw</button>
+    <div id="box">
+      <div id="namesContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    const assignments = {
+      "Yasmine Benachenhou": "Sarah Seladji",
+      "Sarah Seladji": "Sirine Bassaid",
+      "Sirine Bassaid": "Ryma Benmansour",
+      "Ryma Benmansour": "So Fia",
+      "So Fia": "Rayan Zekri",
+      "Rayan Zekri": "Ines Bestaoui",
+      "Ines Bestaoui": "Elissa Belarbi",
+      "Elissa Belarbi": "Yasmine Benachenhou"
+    };
+
+    const allNames = Object.values(assignments);
+
+    function startDraw() {
+      const selectedName = document.getElementById("nameSelect").value;
+      if (!selectedName) {
+        alert("Please select your name!");
+        return;
+      }
+
+      const resultName = assignments[selectedName];
+      const fakeNames = shuffle([...allNames, ...allNames]).filter(n => n !== resultName);
+      fakeNames.push(resultName); // Add actual result at the end
+
+      const namesContainer = document.getElementById("namesContainer");
+      namesContainer.innerHTML = '';
+
+      fakeNames.forEach(name => {
+        const div = document.createElement("div");
+        div.className = "name";
+        div.textContent = name;
+        namesContainer.appendChild(div);
+      });
+
+      const nameHeight = 50;
+      const totalHeight = nameHeight * fakeNames.length;
+
+      namesContainer.style.animation = `slideUpAnim 4s ease-in-out forwards`;
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideUpAnim {
+          from { transform: translateY(0); }
+          to { transform: translateY(-${totalHeight - nameHeight}px); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+  </script>
+</body>
+</html>
+
+
